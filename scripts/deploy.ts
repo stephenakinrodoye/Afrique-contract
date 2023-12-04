@@ -1,27 +1,38 @@
+import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { ethers } from "hardhat";
+import { AfriqueProfile } from "../typechain";
 
-async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const unlockTime = currentTimestampInSeconds + 60;
+// deployed to: 0x98DcA60f1e468CF09De87c27Cc80568512A5B210 (infura)
+// deployed to: 0x3A689034043Af019c89D244D0979f706Ef73304B (alchemy)
+// AfriqueProfile deployed to: 0xed47Ff0C5A5fcbD8c0cD2213ADc04aBc5B43Eb9C
 
-  const lockedAmount = ethers.parseEther("0.001");
+//0xD99DdC90Aaf99D9d48C3b46553b1A3ccF4C4EF7C
+ const main = async () => {
+    //const hre: HardhatRuntimeEnvironment = await ethers.getHRE();
+    const [deployer] = await ethers.getSigners();
 
-  const lock = await ethers.deployContract("Lock", [unlockTime], {
-    value: lockedAmount,
-  });
+    console.log("Deploying contracts with the account:", deployer.address);
 
-  await lock.waitForDeployment();
+    // Deploy AfriqueProfile
+    const AfriqueProfileFactory = await ethers.getContractFactory("AfriqueProfile");
+    const afriqueProfile: AfriqueProfile = await AfriqueProfileFactory.deploy(deployer.address);
 
-  console.log(
-    `Lock with ${ethers.formatEther(
-      lockedAmount
-    )}ETH and unlock timestamp ${unlockTime} deployed to ${lock.target}`
-  );
+    await afriqueProfile.deployed();
+
+    console.log("AfriqueProfile deployed to:", afriqueProfile.address);
+
+    console.log("Contract deployed and verified!");
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+// Run the deployment script
+const runMain = async () => {
+    try {
+        await main()
+        process.exit(0)
+    } catch (error) {
+        console.error(error);
+        process.exit(1);
+    }
+}
+
+runMain()

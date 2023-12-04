@@ -1,12 +1,32 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import { ERC721URIStorage} from "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import {ERC721Enumerable} from "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract AfriqueProfile is ERC721URIStorage, ERC721Enumerable, Ownable {
-    
+    using Strings for uint256;
+   
+    function _update(address to, uint256 tokenId, address auth) internal virtual override(ERC721, ERC721Enumerable) returns (address) {
+        return ERC721Enumerable._update(to, tokenId, auth);
+    }
+
+     function _increaseBalance(address account, uint128 value) internal virtual override(ERC721, ERC721Enumerable) {
+        ERC721Enumerable._increaseBalance(account, value);
+    }
+
+  
+    function supportsInterface(bytes4 interfaceId) public view override(ERC721URIStorage, ERC721Enumerable) returns (bool) {
+        return super.supportsInterface(interfaceId);
+    }
+
+     function tokenURI(uint256 tokenId) public view override(ERC721URIStorage, ERC721) returns (string memory) {
+        return super.tokenURI(tokenId);
+    }
+
     struct UserProfile {
         bytes32 name;
         bytes32 website;
@@ -28,13 +48,25 @@ contract AfriqueProfile is ERC721URIStorage, ERC721Enumerable, Ownable {
         _;
     }
 
-    modifier onlyProfileOwner(address profileAddress) {
-        require(userProfiles[profileAddress].exists, "Profile does not exist");
-        require(profileAddress == msg.sender, "Profile not yours");
-        _;
-    }
 
-    constructor() ERC721(_TOKEN_NAME, _TOKEN_IDENTIFIER) {}
+function withdraw(uint256 tokenId) public onlyProfileOwner(msg.sender) {
+    // Your function implementation
+}
+
+
+
+
+      constructor(address initialOwner) ERC721("Afrique", "AFQ") Ownable(initialOwner) {
+        // Additional initialization if needed
+    }
+function bytes32ToString(bytes32 data) internal pure returns (string memory) {
+    bytes memory bytesString = new bytes(32);
+    for (uint256 i = 0; i < 32; i++) {
+        bytesString[i] = data[i];
+    }
+    return string(bytesString);
+}
+
 
     function createProfile(
         bytes32 name,
@@ -82,10 +114,17 @@ contract AfriqueProfile is ERC721URIStorage, ERC721Enumerable, Ownable {
         address from,
         address to,
         uint256 tokenId
-    ) public override onlyProfileOwner(from) {
+    ) public override(ERC721, IERC721) onlyProfileOwner(from) {
         super.transferFrom(from, to, tokenId);
 
         _updateMintedTokens(from, to, tokenId);
+    }
+
+
+    modifier onlyProfileOwner(address profileAddress) {
+        require(userProfiles[profileAddress].exists, "Profile does not exist");
+        require(profileAddress == msg.sender, "Profile not yours");
+        _;
     }
 
     function _mintProfile(address to) internal {
