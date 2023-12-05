@@ -2,11 +2,10 @@ import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { ethers } from "hardhat";
 import { AfriqueProfile } from "../typechain";
 
-// deployed to: 0x98DcA60f1e468CF09De87c27Cc80568512A5B210 (infura)
-// deployed to: 0x3A689034043Af019c89D244D0979f706Ef73304B (alchemy)
-// AfriqueProfile deployed to: 0xed47Ff0C5A5fcbD8c0cD2213ADc04aBc5B43Eb9C
+//Deploying contracts with the account: 0xB52474353F87345a32d0068dEA25fD31280B6Cbc
+//AfriqueProfile deployed to: 0x82B18061F0b722808cCF63D24786730f8C69be6c
+//Contract deployed and verified!
 
-//0xD99DdC90Aaf99D9d48C3b46553b1A3ccF4C4EF7C
  const main = async () => {
     //const hre: HardhatRuntimeEnvironment = await ethers.getHRE();
     const [deployer] = await ethers.getSigners();
