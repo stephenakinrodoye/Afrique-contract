@@ -7,12 +7,12 @@ import '@typechain/hardhat';
 import "@nomiclabs/hardhat-ethers";
 
 
-const { INFURA_API_KEY, ETHERSCAN_API_KEY, LOCAL_PRIVATE_KEY } = process.env;
+const { INFURA_API_KEY, ETHERSCAN_API_KEY, LOCAL_PRIVATE_KEY_ONE, LOCAL_PRIVATE_KEY_TWO } = process.env;
 
 const networks: Record<string, NetworkUserConfig> = {
     sepolia: {
         url: INFURA_API_KEY,
-        accounts: [LOCAL_PRIVATE_KEY],
+        accounts: [LOCAL_PRIVATE_KEY_ONE, LOCAL_PRIVATE_KEY_TWO],
     },
 };
 
